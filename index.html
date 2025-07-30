@@ -4,142 +4,93 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>건강체 고지사항</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-50">
-  <div class="container mx-auto p-8">
+  <script defer>
+    function handleSubmit(event) {
+      event.preventDefault();
 
-    <!-- 제목 박스 -->
-    <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-900 p-4 rounded mb-6 shadow text-center">
-      <h1 class="text-3xl font-bold">건강체 고지사항</h1>
+      const form = event.target;
+      const data = new FormData(form);
+      const jsonData = {};
+
+      data.forEach((value, key) => {
+        jsonData[key] = value;
+      });
+
+      fetch("https://script.google.com/macros/s/AKfycbxBiYPa9GT89PsT0mjoI14IVgcOh9ITUnkDvYfvSC4cJJuSsj1hIwiihWWryh63H8dyeg/exec", {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(jsonData),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      document.getElementById("form-wrapper").classList.add("hidden");
+      document.getElementById("success-message").classList.remove("hidden");
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 p-4">
+  <div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold text-center mb-6">건강체 고지사항</h1>
+
+    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 mb-6 rounded">
+      <strong>📌 필독:</strong> 아래 문항은 보험사에 제공되는 중요한 정보입니다. 정확하고 사실대로 작성해 주세요.
     </div>
 
-    <form id="disclosure-form" action="https://script.google.com/macros/s/AKfycby3JJn14g3xnPx-nUuMTkZzmPBb7eoqxileI_2TNbvHViTLYQeUtVdWXw07I-jrQ1vu/exec" method="POST" onsubmit="return showSuccessMessage(event)" class="bg-white shadow-md rounded-lg p-6">
-
-      <!-- 이름 -->
-      <div class="mb-4">
-        <label for="name" class="block font-medium">1. 이름 <span class="text-red-500">*</span></label>
-        <input type="text" id="name" name="name" class="w-full p-2 border border-gray-300 rounded" required>
-      </div>
-
-      <!-- 생년월일 -->
-      <div class="mb-4">
-        <label for="dob" class="block font-medium">2. 생년월일 <span class="text-red-500">*</span></label>
-        <input type="date" id="dob" name="dob" class="w-full p-2 border border-gray-300 rounded" required>
-      </div>
-
-      <!-- 고지사항 1번 -->
-      <div class="mb-4">
-        <label class="block font-medium">3. 최근 3개월 이내에 병원 가신 적 있으신가요? <span class="text-red-500">*</span></label>
-        <div class="flex space-x-4 mb-2">
-          <label><input type="radio" name="question1" value="yes" required> 예</label>
-          <label><input type="radio" name="question1" value="no"> 아니오</label>
-        </div>
-        <div id="question1-details" style="display:none;">
-          <label class="block text-sm mb-1">세부사항</label>
-          <textarea name="question1_details" class="w-full p-2 border border-gray-300 rounded" placeholder="예시: 23년 4월 10일 감기로 1일 통원 3일치 약처방"></textarea>
-        </div>
-      </div>
-
-      <!-- 고지사항 2번 -->
-      <div class="mb-4">
-        <label class="block font-medium">4. 최근 1년 이내에 추가검사, 재검사를 받으신 적 있으신가요? <span class="text-red-500">*</span></label>
-        <div class="flex space-x-4 mb-2">
-          <label><input type="radio" name="question2" value="yes" required> 예</label>
-          <label><input type="radio" name="question2" value="no"> 아니오</label>
-        </div>
-        <div id="question2-details" style="display:none;">
-          <label class="block text-sm mb-1">세부사항</label>
-          <textarea name="question2_details" class="w-full p-2 border border-gray-300 rounded" placeholder="예시: 24년 3월 25일 유방 추가검사 초음파 실시"></textarea>
-        </div>
-      </div>
-
-      <!-- 고지사항 3번 -->
-      <div class="mb-4">
-        <label class="block font-medium">5. 최근 5년 이내 입원, 수술, 하나의 질병 또는 사고로 7일 이상 통원, 30일 이상 약을 복용 하신 적이 있으신가요? <span class="text-red-500">*</span></label>
-        <div class="flex space-x-4 mb-2">
-          <label><input type="radio" name="question3" value="yes" required> 예</label>
-          <label><input type="radio" name="question3" value="no"> 아니오</label>
-        </div>
-        <div id="question3-details" style="display:none;">
-          <label class="block text-sm mb-1">세부사항</label>
-          <textarea name="question3_details" class="w-full p-2 border border-gray-300 rounded" placeholder="예시: 22년 6월 10일 ~23년 9월까지 허리디스크 10일 통원"></textarea>
-        </div>
-      </div>
-
-      <!-- 고지사항 4번 -->
-      <div class="mb-4">
-        <label class="block font-medium">6. 최근 5년 이내 10대 질병으로 진단 및 치료 받으신 적이 있으신가요? <span class="text-red-500">*</span></label>
-        <p class="text-sm text-gray-600 mb-1">(암, 백혈병, 고혈압, 협심증, 심근경색, 심장판막증, 간경화, 뇌졸중, 당뇨병, 에이즈)</p>
-        <div class="flex space-x-4 mb-2">
-          <label><input type="radio" name="question4" value="yes" required> 예</label>
-          <label><input type="radio" name="question4" value="no"> 아니오</label>
-        </div>
-        <div id="question4-details" style="display:none;">
-          <label class="block text-sm mb-1">세부사항</label>
-          <textarea name="question4_details" class="w-full p-2 border border-gray-300 rounded" placeholder="예시: 2023년 5월 10일 고혈압 진단 약처방 시작"></textarea>
-        </div>
-      </div>
-
-      <!-- 고지사항 5번 -->
-      <div class="mb-4">
-        <label class="block font-medium">7. 최근 10년 이내 입원이나 수술 하신 적 있으신가요? <span class="text-red-500">*</span></label>
-        <div class="flex space-x-4 mb-2">
-          <label><input type="radio" name="question5" value="yes" required> 예</label>
-          <label><input type="radio" name="question5" value="no"> 아니오</label>
-        </div>
-        <div id="question5-details" style="display:none;">
-          <label class="block text-sm mb-1">세부사항</label>
-          <textarea name="question5_details" class="w-full p-2 border border-gray-300 rounded" placeholder="예시: 2023년 9월 12일 건강검진에서 대장용종 1개 제거"></textarea>
-        </div>
-      </div>
-
-      <!-- 필독 박스 -->
-      <div class="bg-yellow-100 border-l-4 border-yellow-400 p-4 rounded mb-6">
-        <p class="font-semibold">※ 필독 ※</p>
-        <p class="text-sm mt-1">고지사항은 추후 보상을 잘 받기 위해 가장 중요한 부분입니다.</p>
-        <p class="text-sm">최대한 알고 계시는 내용을 상세하게 알려주시는 것이 좋습니다.</p>
-      </div>
-
-      <!-- 제출 버튼 -->
+    <form id="form-wrapper" class="space-y-6" onsubmit="handleSubmit(event)">
+      <!-- 문항 1 -->
       <div>
-        <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700">제출</button>
+        <label class="block font-medium">1. 최근 3개월 이내에 진찰, 검사(건강검진 포함), 투약, 처방을 받은 적이 있나요?</label>
+        <textarea name="question1" class="mt-2 w-full border border-gray-300 rounded p-2" rows="3" placeholder="예: 건강검진에서 고혈압 지적받음 등"></textarea>
+      </div>
+
+      <!-- 문항 2 -->
+      <div>
+        <label class="block font-medium">2. 최근 5년 이내 입원, 수술, 추가 정밀검사를 받은 적이 있나요?</label>
+        <textarea name="question2" class="mt-2 w-full border border-gray-300 rounded p-2" rows="3" placeholder="예: 2021년 위 내시경 검사 및 용종 제거"></textarea>
+      </div>
+
+      <!-- 문항 3 -->
+      <div>
+        <label class="block font-medium">3. 현재 치료 중인 질환이 있나요? 또는 향후 치료가 예정되어 있나요?</label>
+        <textarea name="question3" class="mt-2 w-full border border-gray-300 rounded p-2" rows="3" placeholder="예: 고혈압 약 복용 중, 8월 MRI 예정 등"></textarea>
+      </div>
+
+      <!-- 문항 4 -->
+      <div>
+        <label class="block font-medium">4. 과거 질병 또는 상해로 후유증이 남아 있거나 장애 진단을 받은 적이 있나요?</label>
+        <textarea name="question4" class="mt-2 w-full border border-gray-300 rounded p-2" rows="3" placeholder="예: 교통사고 후 어깨 관절 운동 제한 등"></textarea>
+      </div>
+
+      <!-- 수정된 문항 5 -->
+      <div>
+        <label class="block font-medium">5. 최근 10년 이내에 입원이나 수술하신 적 있으신가요?</label>
+        <textarea name="question5" class="mt-2 w-full border border-gray-300 rounded p-2" rows="3" placeholder="예: 2023년 9월 12일 건강검진에서 대장용종 1개 제거"></textarea>
+      </div>
+
+      <!-- 수정된 문항 6 -->
+      <div>
+        <label class="block font-medium">6. 최근 10년 이내에 6대 질병으로 진단 및 치료 받으신 적 있으신가요?<br />
+        (암, 협심증, 심근경색, 심장판막증, 간경화, 뇌졸중)</label>
+        <textarea name="question6" class="mt-2 w-full border border-gray-300 rounded p-2" rows="3" placeholder="예: 2018년 8월 10일 위암 수술"></textarea>
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
+          제출하기
+        </button>
       </div>
     </form>
 
-    <!-- 성공 메시지 -->
-    <div id="success-message" style="display:none;" class="bg-green-100 border border-green-400 text-green-800 p-4 mt-6 rounded text-center">
-      고지사항이 보험전문가에게 제출되었습니다.
+    <!-- 제출 완료 메시지 -->
+    <div id="success-message" class="hidden text-center mt-10">
+      <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-6 rounded relative">
+        🎉 <strong>제출이 완료되었습니다!</strong><br />
+        담당자가 확인 후 연락드리겠습니다. 감사합니다.
+      </div>
     </div>
   </div>
-
-  <script>
-    const toggleDetails = (name) => {
-      document.querySelectorAll(`input[name="${name}"]`).forEach(input => {
-        input.addEventListener('change', function () {
-          const detailDiv = document.getElementById(`${name}-details`);
-          if (this.value === 'yes') {
-            detailDiv.style.display = 'block';
-          } else {
-            detailDiv.style.display = 'none';
-          }
-        });
-      });
-    };
-
-    ['question1', 'question2', 'question3', 'question4', 'question5'].forEach(toggleDetails);
-
-    function showSuccessMessage(event) {
-      event.preventDefault();
-      const form = document.getElementById('disclosure-form');
-      const formData = new FormData(form);
-      fetch(form.action, { method: 'POST', body: formData })
-        .then(() => {
-          form.style.display = 'none';
-          document.getElementById('success-message').style.display = 'block';
-        });
-      return false;
-    }
-  </script>
 </body>
 </html>
